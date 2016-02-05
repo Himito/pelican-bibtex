@@ -117,6 +117,7 @@ def add_publications(generator):
                              'slides' : get_field(entry, 'slides'),
                              'text'   : text,
                              'url'    : get_field(entry, 'url'),
+                             'note'    : get_field(entry, 'note'),
                              'year'   : entry.fields.get('year'),})
 
     generator.context['publications'] = publications
