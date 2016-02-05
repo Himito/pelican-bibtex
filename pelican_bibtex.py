@@ -41,7 +41,7 @@ def entrytype(label):
         'article'       : (5, 'Journal'),
         'inproceedings' : (6, 'Conference'),
         'phdthesis'     : (7, 'PhD Thesis'),
-        'masterthesis'  : (8, 'Master Thesis'),
+        'mastersthesis'  : (8, 'Master Thesis'),
         'techreport'    : (9, 'Technical Report'),
         'manual'        : (10, 'Manual'),
         'misc'          : (11, 'Miscellaneous'),
@@ -102,7 +102,7 @@ def add_publications(generator):
         # Render the bibtex string for the entry
         buf = StringIO()
         Writer().write_stream(BibliographyData(entries={key: entry}), buf)
-        
+
         # Prettify BibTeX entries
         text = fmt_entry.text.render(html.Backend())
         text = text.replace(r"\{", "").replace(r"\}", "")
