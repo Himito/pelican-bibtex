@@ -24,7 +24,7 @@ def get_field(entry, field):
     """
     Get a field in an entry.
     """
-    return entry.fields.get(field) if field in entry.fields.keys() else ""
+    return entry.fields.get(field, "")
 
 
 def entrytype(label):
@@ -33,16 +33,16 @@ def entrytype(label):
     collection of labels to be displayed for each entrytype.
     """
     entries = {
-        'book'          : (0, 'Book'),
-        'incollection'  : (1, 'Book in a Collection'),
-        'booklet'       : (2, 'Booklet'),
-        'proceedings'   : (3, 'Proceedings'),
-        'inbook'        : (4, 'Chapter in a Book'),
-        'article'       : (5, 'Journal'),
-        'inproceedings' : (6, 'Conference'),
-        'phdthesis'     : (7, 'PhD Thesis'),
-        'mastersthesis'  : (8, 'Master Thesis'),
-        'techreport'    : (9, 'Technical Report'),
+        'book'          : (0,  'Book'),
+        'incollection'  : (1,  'Book in a Collection'),
+        'booklet'       : (2,  'Booklet'),
+        'proceedings'   : (3,  'Proceedings'),
+        'inbook'        : (4,  'Chapter in a Book'),
+        'article'       : (5,  'Journal'),
+        'inproceedings' : (6,  'Conference'),
+        'phdthesis'     : (7,  'PhD Thesis'),
+        'mastersthesis' : (8,  'Master Thesis'),
+        'techreport'    : (9,  'Technical Report'),
         'manual'        : (10, 'Manual'),
         'misc'          : (11, 'Miscellaneous'),
         'unpublished'   : (12, 'Unpublished'),
@@ -81,6 +81,7 @@ def add_publications(generator):
         from pybtex.database import BibliographyData, PybtexError
         from pybtex.backends import html
         from pybtex.style.formatting import plain
+        from style import mystyle
     except ImportError:
         LOGGER.warn('`pelican_bibtex` failed to load dependency `pybtex`')
         return
@@ -95,7 +96,7 @@ def add_publications(generator):
 
     publications = []
 
-    for fmt_entry in plain.Style().format_entries(bib_items.entries.values()):
+    for fmt_entry in mystyle.Style().format_entries(bib_items.entries.values()):
         key = fmt_entry.key
         entry = bib_items.entries[key]
 
@@ -117,7 +118,7 @@ def add_publications(generator):
                              'slides' : get_field(entry, 'slides'),
                              'text'   : text,
                              'url'    : get_field(entry, 'url'),
-                             'note'    : get_field(entry, 'note'),
+                             'note'   : get_field(entry, 'note'),
                              'year'   : entry.fields.get('year'),})
 
     generator.context['publications'] = publications

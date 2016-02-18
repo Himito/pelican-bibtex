@@ -43,6 +43,6 @@ setup(
     author='Vlad Niculae',
     author_email='vlad@vene.ro',
     url='https://pypi.python.org/pypi/pelican_bibtex',
-    py_modules=['pelican_bibtex'],
+    py_modules=['pelican_bibtex', 'style.mystyle'],
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f]
 )
