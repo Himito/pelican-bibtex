@@ -4,21 +4,20 @@ Pelican BibTeX
 
 A Pelican plugin that populates the context with a list of formatted
 citations, loaded from a BibTeX file at a configurable path.
-
-The use case for now is to generate a ``Publications'' page for academic
-websites.
 """
 
 # Fork author: Emmanuel Fleury <emmanuel.fleury@gmail.com>
 # Initial author: Vlad Niculae <vlad@vene.ro>
 # Unlicense (see UNLICENSE for details)
 
-import logging
-LOGGER = logging.getLogger(__name__)
 
 from pelican import signals
+from logging import getLogger
 
 __version__ = '0.3'
+
+LOGGER = getLogger(__name__)
+
 
 def get_field(entry, field):
     """
@@ -48,10 +47,7 @@ def entrytype(label):
         'unpublished'   : (12, 'Unpublished'),
     }
 
-    if label in entries:
-        return entries[label]
-    else:
-        return (100, label)
+    return entries.get(label, (100, label))
 
 
 def add_publications(generator):
@@ -71,17 +67,18 @@ def add_publications(generator):
     """
     if 'PUBLICATIONS_SRC' not in generator.settings:
         return
+
     try:
         from StringIO import StringIO
     except ImportError:
         from io import StringIO
+
     try:
         from pybtex.database.input.bibtex import Parser
         from pybtex.database.output.bibtex import Writer
         from pybtex.database import BibliographyData, PybtexError
         from pybtex.backends import html
-        from pybtex.style.formatting import plain
-        from style import mystyle
+        from style.mystyle import Style
     except ImportError:
         LOGGER.warn('`pelican_bibtex` failed to load dependency `pybtex`')
         return
@@ -96,7 +93,7 @@ def add_publications(generator):
 
     publications = []
 
-    for fmt_entry in mystyle.Style().format_entries(bib_items.entries.values()):
+    for fmt_entry in Style().format_entries(bib_items.entries.values()):
         key = fmt_entry.key
         entry = bib_items.entries[key]
 
@@ -109,17 +106,15 @@ def add_publications(generator):
         text = text.replace(r"\{", "").replace(r"\}", "")
         text = text.replace("{", "").replace("}", "")
 
-        publications.append({'bibtex' : buf.getvalue(),
-                             'doi'    : get_field(entry, 'doi'),
-                             'entry'  : entrytype(entry.type),
-                             'key'    : key,
-                             'pdf'    : get_field(entry, 'pdf'),
-                             'poster' : get_field(entry, 'poster'),
-                             'slides' : get_field(entry, 'slides'),
-                             'text'   : text,
-                             'url'    : get_field(entry, 'url'),
-                             'note'   : get_field(entry, 'note'),
-                             'year'   : entry.fields.get('year'),})
+        publications.append({
+            'bibtex' : buf.getvalue(),
+            'doi'    : get_field(entry, 'doi'),
+            'entry'  : entrytype(entry.type),
+            'text'   : text,
+            'url'    : get_field(entry, 'url'),
+            'note'   : get_field(entry, 'note'),
+            'year'   : entry.fields.get('year'),
+            })
 
     generator.context['publications'] = publications
 
