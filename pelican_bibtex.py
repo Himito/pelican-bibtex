@@ -78,7 +78,7 @@ def add_publications(generator):
         from pybtex.database.output.bibtex import Writer
         from pybtex.database import BibliographyData, PybtexError
         from pybtex.backends import html
-        from style.mystyle import Style
+        from .style.mystyle import Style
     except ImportError:
         LOGGER.warn('`pelican_bibtex` failed to load dependency `pybtex`')
         return
