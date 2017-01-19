@@ -6,9 +6,9 @@ A Pelican plugin that populates the context with a list of formatted
 citations, loaded from a BibTeX file at a configurable path.
 """
 
-# Fork author: Emmanuel Fleury <emmanuel.fleury@gmail.com>
+# Fork author: Jaime Arias <jaime.arias@inria.fr>
 # Initial author: Vlad Niculae <vlad@vene.ro>
-# Unlicense (see UNLICENSE for details)
+# Unlicensed (see UNLICENSE for details)
 
 
 from pelican import signals
@@ -26,10 +26,10 @@ def get_field(entry, field):
     return entry.fields.get(field, "")
 
 
-def entrytype(label):
+def entry_type(label):
     """
     Define a ranking among the different types of publication and a
-    collection of labels to be displayed for each entrytype.
+    collection of labels to be displayed for each entry type.
     """
     entries = {
         'book'          : (0,  'Book'),
@@ -62,8 +62,8 @@ def add_publications(generator):
     Output
     ------
     generator.context['publications']:
-        List of tuples (key, year, text, bibtex, pdf, slides, poster).
-        See Readme.md for more details.
+        List of dictionaries with keys (bibtex, doi, entry, text, url, note,
+        year). See Readme.md for more details.
     """
     if 'PUBLICATIONS_SRC' not in generator.settings:
         return
@@ -107,13 +107,13 @@ def add_publications(generator):
         text = text.replace("{", "").replace("}", "")
 
         publications.append({
-            'bibtex' : buf.getvalue(),
-            'doi'    : get_field(entry, 'doi'),
-            'entry'  : entrytype(entry.type),
-            'text'   : text,
-            'url'    : get_field(entry, 'url'),
-            'note'   : get_field(entry, 'note'),
-            'year'   : entry.fields.get('year'),
+            'bibtex': buf.getvalue(),
+            'doi': get_field(entry, 'doi'),
+            'entry': entry_type(entry.type),
+            'text': text,
+            'url': get_field(entry, 'url'),
+            'note': get_field(entry, 'note'),
+            'year': entry.fields.get('year'),
             })
 
     generator.context['publications'] = publications
