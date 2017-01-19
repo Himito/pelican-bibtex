@@ -26,30 +26,6 @@ def get_field(entry, field):
     return entry.fields.get(field, "")
 
 
-def entry_type(label):
-    """
-    Define a ranking among the different types of publication and a
-    collection of labels to be displayed for each entry type.
-    """
-    entries = {
-        'book'          : (0,  'Book'),
-        'incollection'  : (1,  'Book in a Collection'),
-        'booklet'       : (2,  'Booklet'),
-        'proceedings'   : (3,  'Proceedings'),
-        'inbook'        : (4,  'Chapter in a Book'),
-        'article'       : (5,  'Journal'),
-        'inproceedings' : (6,  'Conference'),
-        'phdthesis'     : (7,  'PhD Thesis'),
-        'mastersthesis' : (8,  'Master Thesis'),
-        'techreport'    : (9,  'Technical Report'),
-        'manual'        : (10, 'Manual'),
-        'misc'          : (11, 'Miscellaneous'),
-        'unpublished'   : (12, 'Unpublished'),
-    }
-
-    return entries.get(label, (100, label))
-
-
 def add_publications(generator):
     """
     Populates context with a list of BibTeX publications.
@@ -109,12 +85,12 @@ def add_publications(generator):
         publications.append({
             'bibtex': buf.getvalue(),
             'doi': get_field(entry, 'doi'),
-            'entry': entry_type(entry.type),
+            'entry': entry.type,
             'text': text,
             'url': get_field(entry, 'url'),
             'note': get_field(entry, 'note'),
             'year': entry.fields.get('year'),
-            })
+        })
 
     generator.context['publications'] = publications
 
